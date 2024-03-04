@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from auth.utils import get_user
 from users.models import User
@@ -90,11 +90,20 @@ class LoginAPIView(APIView):
 
 
 class RefreshTokenAPIView(TokenRefreshView):
+    permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         try:
             return super().post(request, *args, **kwargs)
         except TokenError:
             return Response({'message': 'Token is invalid or expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class VerifyTokenAPIView(TokenVerifyView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class CreateOTPAPIView(APIView):

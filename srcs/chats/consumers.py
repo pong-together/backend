@@ -22,24 +22,24 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         try:
             await self.init_connection()
-            logger.info(f'Websocket CHAT Try to connect {self.user.intra_id}')
+            logger.info(f'Websocket CHAT Try to connect {self.user.intra_id} {self.channel_name}')
             await self.channel_layer.group_add(self.GROUP_NAME, self.channel_name)
             await self.accept()
             await self.handle_multiple_connection()
             self.ping_task = asyncio.create_task(self.send_ping())
             await self.update_user_chat_connection(True)
-            logger.info(f'Websocket CHAT CONNECT {self.user.intra_id}')
+            logger.info(f'Websocket CHAT CONNECT {self.user.intra_id} {self.channel_name}')
         except Exception:
             await self.close()
 
     async def disconnect(self, code):
         try:
-            logger.info(f'Websocket CHAT Try to disconnect {self.user.intra_id}')
+            logger.info(f'Websocket CHAT Try to disconnect {self.user.intra_id} {self.channel_name}')
             await self.delete_chat_users()
             await self.channel_layer.group_discard(self.GROUP_NAME, self.channel_name)
             await self.cancel_ping_task()
             await self.update_user_chat_connection(False)
-            logger.info(f'Websocket CHAT DISCONNECT {self.user.intra_id}')
+            logger.info(f'Websocket CHAT DISCONNECT {self.user.intra_id} {self.channel_name}')
         except Exception as e:
             await self.send_json({'error': str(e)})
 

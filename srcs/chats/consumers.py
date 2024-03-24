@@ -92,6 +92,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def handle_multiple_connection(self):
         if self.user.intra_id in self.chat_users:
+            logger.warning(f'Websocket CHAT EVENT send_multiple_connection {self.user.intra_id} {self.channel_name}')
             await self.send_json({
                 'type': 'send_multiple_connection'
             })
